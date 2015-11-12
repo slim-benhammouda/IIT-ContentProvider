@@ -49,6 +49,9 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
 
         if (savedInstanceState == null) {
             mLoaderManager.initLoader(RECORD_TABLE_ID, null, this);
+//            mLoaderManager.initLoader(LIST_TABLE_ID, null, this);
+//            mLoaderManager.initLoader(ITEM_TABLE_ID, null, this);
+
             mObjectList = new ArrayList<ListItemWrapper>();
 
         } else {
@@ -115,8 +118,16 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
 
-        return new CursorLoader(getActivity().getApplicationContext(), TestContentProvider.RECORDS_CONTENT_URI,
-                RecordsTable.PROJECTION_ALL, null, null, null);
+        CursorLoader cursorLoader = null;
+        if (id == RECORD_TABLE_ID) {
+            cursorLoader = new CursorLoader(getActivity().getApplicationContext(), TestContentProvider.RECORDS_CONTENT_URI,
+                    RecordsTable.PROJECTION_ALL, null, null, null);
+        }
+        //else if (id == LIST_TABLE_ID) {
+//
+//        }
+
+        return cursorLoader;
     }
 
     @Override

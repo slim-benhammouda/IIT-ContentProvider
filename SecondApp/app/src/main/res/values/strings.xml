@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SecondApp</string>
+
+    <string name="action_read">Read</string>
+</resources>

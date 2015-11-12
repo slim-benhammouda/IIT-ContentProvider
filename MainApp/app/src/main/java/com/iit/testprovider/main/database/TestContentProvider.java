@@ -9,13 +9,15 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
-
-import java.util.Arrays;
-import java.util.HashSet;
+import android.util.Log;
 
 import com.iit.testprovider.main.database.tables.ListsTable;
 import com.iit.testprovider.main.database.tables.RecordsTable;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class TestContentProvider extends ContentProvider {
 
@@ -146,6 +148,14 @@ public class TestContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Log.v("iit", "ContentProvider query method: CallingPackage = " + getCallingPackage());
+
+        } else {
+            //TODO
+
+        }
+
         // Using SQLiteQueryBuilder instead of query() method
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
@@ -171,7 +181,7 @@ public class TestContentProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
         Cursor cursor = queryBuilder.query(db, projection, selection,
                 selectionArgs, null, null, sortOrder);
         // Make sure that potential listeners are getting notified
