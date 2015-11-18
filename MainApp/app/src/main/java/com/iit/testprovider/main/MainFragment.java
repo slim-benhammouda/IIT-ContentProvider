@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import com.iit.testprovider.main.adapter.CustomAdapter;
+import com.iit.testprovider.main.core.RecordsHelper;
 import com.iit.testprovider.main.database.TestContentProvider;
 import com.iit.testprovider.main.database.tables.RecordsTable;
 import com.iit.testprovider.main.ui.AddDialog;
@@ -35,7 +36,6 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
 
 
     private CustomAdapter mAdapter;
-    private ArrayList<ListItemWrapper> mObjectList;
     private android.support.v4.app.LoaderManager mLoaderManager;
 
     @Override
@@ -52,10 +52,9 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
 //            mLoaderManager.initLoader(LIST_TABLE_ID, null, this);
 //            mLoaderManager.initLoader(ITEM_TABLE_ID, null, this);
 
-            mObjectList = new ArrayList<ListItemWrapper>();
 
         } else {
-            mObjectList = (ArrayList<ListItemWrapper>) savedInstanceState.getSerializable(LIST_CONTENT_KEY);
+            //TODO mObjectList = (ArrayList<ListItemWrapper>) savedInstanceState.getSerializable(LIST_CONTENT_KEY);
         }
 
         // use this setting to improve performance if you know that changes
@@ -67,7 +66,7 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
         recyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new CustomAdapter(mObjectList, this);
+        mAdapter = new CustomAdapter(this);
         recyclerView.setAdapter(mAdapter);
         setHasOptionsMenu(true);
         return rootView;
@@ -77,7 +76,7 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
-        outState.putSerializable(LIST_CONTENT_KEY, mObjectList);
+        //TODO outState.putSerializable(LIST_CONTENT_KEY, mObjectList);
 
         super.onSaveInstanceState(outState);
     }
@@ -102,8 +101,6 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
     @Override
     public void onOkClicked(ListItemWrapper listItemWrapper) {
 
-        mObjectList.add(listItemWrapper);
-        mAdapter.notifyDataSetChanged();
         ContentValues contentValues = new ContentValues();
         contentValues.put(RecordsTable.LABEL, listItemWrapper.getTitle());
         contentValues.put(RecordsTable.DESCRIPTION, listItemWrapper.getDescription());
@@ -113,6 +110,8 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
                 contentValues);
 
         listItemWrapper.setId(Long.valueOf(uri.getLastPathSegment()));
+        RecordsHelper.getInstance().addRecord(listItemWrapper);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -138,7 +137,7 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
 
             if (data.moveToFirst()) {
                 while (!data.isAfterLast()) {
-                    mObjectList.add(createListItem(data));
+                    RecordsHelper.getInstance().addRecord(createListItem(data));
                     if (!data.isClosed()) {
                         data.moveToNext();
                     }
