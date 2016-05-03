@@ -145,6 +145,8 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
 
                 mAdapter.notifyDataSetChanged();
             }
+
+            //Do this only if you no longer need the loader
             data.close();
             mLoaderManager.destroyLoader(RECORD_TABLE_ID);
         }
