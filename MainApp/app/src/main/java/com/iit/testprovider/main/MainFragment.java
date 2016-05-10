@@ -9,8 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -34,7 +36,7 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
     private static final String LIST_CONTENT_KEY = "list_content_key";
     private static final int RECORD_TABLE_ID = 1;
 
-
+    private RecyclerView recyclerView;
     private CustomAdapter mAdapter;
     private android.support.v4.app.LoaderManager mLoaderManager;
 
@@ -42,7 +44,7 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
 
         mLoaderManager = getLoaderManager();
@@ -63,6 +65,7 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
 
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        //GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(),3);
         recyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
@@ -93,6 +96,28 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
             AddDialog addDialog = AddDialog.newInstance(this);
             addDialog.show(getActivity().getSupportFragmentManager(), "");
             return true;
+        } else if (id == R.id.action_linear) {
+
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+            recyclerView.setLayoutManager(mLayoutManager);
+            return true;
+        } else if (id == R.id.action_grid) {
+            GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 3);
+            recyclerView.setLayoutManager(mLayoutManager);
+
+            return true;
+        } else if (id == R.id.action_horizontal_stagged) {
+            StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
+
+            recyclerView.setLayoutManager(mLayoutManager);
+
+            return true;
+        } else if (id == R.id.action_vertical_stagged) {
+            StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
+            recyclerView.setLayoutManager(mLayoutManager);
+
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -111,7 +136,8 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
 
         listItemWrapper.setId(Long.valueOf(uri.getLastPathSegment()));
         RecordsHelper.getInstance().addRecord(listItemWrapper);
-        mAdapter.notifyDataSetChanged();
+//        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyItemInserted(RecordsHelper.getInstance().getSize() - 1);
     }
 
     @Override
@@ -178,25 +204,13 @@ public class MainFragment extends Fragment implements AddDialog.OnAddListener, L
         //delete the clicked item in our case, can be modified
 
 
-//        Log.v("slim", "mObjectList removed item position = "+position);
-//        Log.v("slim", "mObjectList removed item id = "+mObjectList.get(position).getId());
-//        Log.v("slim", "mObjectList removed item title = "+mObjectList.get(position).getTitle());
-//
-//        getActivity().getContentResolver().delete(
-//                ContentUris.withAppendedId(
-//                        TestContentProvider.RECORDS_CONTENT_URI, mObjectList.get(position).getId()),
-//                null, null);
-//
-//        mObjectList.remove(position);
-//        mAdapter.notifyItemRemoved(position);
-//
-//
-//        Log.v("slim", "delete performed");
-//        for(ListItemWrapper listItemWrapper : mObjectList){
-//            Log.v("slim", "mObjectList item id = "+listItemWrapper.getId());
-//            Log.v("slim", "mObjectList item title = "+listItemWrapper.getTitle());
-//            Log.v("slim", "-----------------------");
-//        }
+        getActivity().getContentResolver().delete(
+                ContentUris.withAppendedId(
+                        TestContentProvider.RECORDS_CONTENT_URI, RecordsHelper.getInstance().get(position).getId()),
+                null, null);
+
+        RecordsHelper.getInstance().remove(position);
+        mAdapter.notifyItemRemoved(position);
 
     }
 }

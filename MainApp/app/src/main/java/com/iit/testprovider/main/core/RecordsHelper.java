@@ -49,6 +49,11 @@ public class RecordsHelper {
         return result;
     }
 
+    public void remove(int position) {
+        ListItemWrapper listItemWrapper = get(position);
+        mRecordsHashMap.remove(listItemWrapper.getId());
+    }
+
     public int indexOf(ListItemWrapper item) {
         return new ArrayList(mRecordsHashMap.values()).indexOf(item);
     }
