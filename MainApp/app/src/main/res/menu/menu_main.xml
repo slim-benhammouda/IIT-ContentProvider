@@ -9,6 +9,27 @@
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_linear"
+        android:title="Linear manager"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_grid"
+        android:title="Grid manager"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_horizontal_stagged"
+        android:title="Horizontal stagged manager"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_vertical_stagged"
+        android:title="Vertical stagged manager"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"

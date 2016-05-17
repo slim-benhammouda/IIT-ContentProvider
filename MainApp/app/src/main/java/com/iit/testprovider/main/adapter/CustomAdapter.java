@@ -10,29 +10,28 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import com.iit.testprovider.main.R;
+import com.iit.testprovider.main.core.RecordsHelper;
 import com.iit.testprovider.main.wrapper.ListItemWrapper;
 
 
 public class CustomAdapter extends
         RecyclerView.Adapter<CustomAdapter.ViewHolder> implements View.OnClickListener {
 
-    private ArrayList<ListItemWrapper> mObjectsList = new ArrayList<ListItemWrapper>();
-    private OnItemClickedListener mItemClickedListener;
+        private OnItemClickedListener mItemClickedListener;
 
     private CustomAdapter(){
         //hide default constructor
     }
 
-    public CustomAdapter(ArrayList<ListItemWrapper> itemsList, OnItemClickedListener listener) {
+    public CustomAdapter( OnItemClickedListener listener) {
 
-        mObjectsList = itemsList;
-        mItemClickedListener = listener;
+                mItemClickedListener = listener;
     }
 
     @Override
     public int getItemCount() {
 
-        return mObjectsList.size();
+        return RecordsHelper.getInstance().getSize();
     }
 
     @Override
@@ -50,9 +49,9 @@ public class CustomAdapter extends
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.mItemWrapper = mObjectsList.get(position);
-        holder.mItemTitle.setText(mObjectsList.get(position).getTitle());
-        holder.mItemDescription.setText(mObjectsList.get(position).getDescription());
+        holder.mItemWrapper = RecordsHelper.getInstance().get(position);
+        holder.mItemTitle.setText(holder.mItemWrapper.getTitle());
+        holder.mItemDescription.setText(holder.mItemWrapper.getDescription());
         holder.itemView.setOnClickListener(this);
         holder.itemView.setTag(holder);
 
@@ -61,8 +60,7 @@ public class CustomAdapter extends
 
     @Override
     public void onClick(View v) {
-        Log.v("slim", "Position clicked = "+mObjectsList.indexOf(((ViewHolder)v.getTag()).mItemWrapper));
-        mItemClickedListener.onItemClicked(mObjectsList.indexOf(((ViewHolder)v.getTag()).mItemWrapper));
+        mItemClickedListener.onItemClicked(RecordsHelper.getInstance().indexOf(((ViewHolder) v.getTag()).mItemWrapper));
     }
 
     // Provide a reference to the views for each data item
